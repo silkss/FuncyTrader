@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <UserSecretsId>dotnet-BackgroundFuncyTrader-01bfe6c0-3484-480a-bf8f-78e5ee9cf13f</UserSecretsId>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <Compile Include="Connectors\IbConnector.fs" />
+    <Compile Include="Worker.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\client\CSharpAPI.csproj" />
+  </ItemGroup>
+</Project>

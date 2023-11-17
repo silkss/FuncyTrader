@@ -1,7 +1,8 @@
-﻿
-namespace Trader.Services.IB;
-public class IbSettings {
-    public IbSettings(string host, int port, int clientId) {
+﻿namespace Trader.Services.Connectors.IB;
+public class IbSettings
+{
+    public IbSettings(string host, int port, int clientId)
+    {
         Host = host;
         Port = port;
         ClientId = clientId;

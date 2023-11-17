@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpAPI", "client\CSharpA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trader", "Trader\Trader.csproj", "{F085BDE7-6216-4FAC-B1C2-ED54F74FBEB8}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "BackgroundFuncyTrader", "BackgroundFuncyTrader\BackgroundFuncyTrader.fsproj", "{34421106-D4DC-49C6-9DBC-59D8FB5FB329}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F085BDE7-6216-4FAC-B1C2-ED54F74FBEB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F085BDE7-6216-4FAC-B1C2-ED54F74FBEB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F085BDE7-6216-4FAC-B1C2-ED54F74FBEB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34421106-D4DC-49C6-9DBC-59D8FB5FB329}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34421106-D4DC-49C6-9DBC-59D8FB5FB329}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34421106-D4DC-49C6-9DBC-59D8FB5FB329}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34421106-D4DC-49C6-9DBC-59D8FB5FB329}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

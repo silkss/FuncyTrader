@@ -3,30 +3,43 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Trader.Models;
 
-namespace Trader.Services.IB;
+namespace Trader.Services.Connectors.IB;
 
 public class IbConnector : IConnector, EWrapper {
     private readonly IbSettings settings;
     private readonly ILogger<IConnector> logger;
-
     private readonly EReaderMonitorSignal signal;
     private readonly EClientSocket client;
-
     private int validOrderId;
 
+    public event FutureEventHandler FutureEvent = delegate { };
+    public event PriceEventHandler LastPriceEvent = delegate { };
     public IbConnector(ILogger<IConnector> logger, ISettings settings) {
         signal = new EReaderMonitorSignal();
         client = new EClientSocket(this, signal);
-            
+
         this.settings = settings.GetIbSettings()
                         ?? throw new ArgumentNullException(nameof(settings));
         this.logger = logger;
-        Connect();
     }
 
     public bool IsConnected => client.IsConnected();
-    
+
+    public void RequestFuture(int reqId, string symbol, string exchange, DateOnly expiration) {
+        var contract = new Contract() {
+            Symbol = symbol,
+            Exchange = exchange,
+            LastTradeDateOrContractMonth = expiration.ToIbDateTime(),
+            SecType = "FUT"
+        };
+        client.reqContractDetails(reqId, contract);
+    }
+    public void RequestMarketData(Instrument instrument) {
+        client.reqMktData(instrument.Id, instrument.ToContract(), string.Empty, false, false, null);
+    }
+
     public void Connect() {
         client.eConnect(settings.Host, settings.Port, settings.ClientId);
         var reader = new EReader(client, signal).Start();
@@ -82,12 +95,13 @@ public class IbConnector : IConnector, EWrapper {
     }
 
     public void contractDetails(int reqId, ContractDetails contractDetails) {
-        throw new NotImplementedException();
+        if (contractDetails.Contract.SecType == "FUT") {
+            var instrument = contractDetails.ToInstrument();
+            FutureEvent.Invoke(reqId, this, instrument);
+        }
     }
 
-    public void contractDetailsEnd(int reqId) {
-        throw new NotImplementedException();
-    }
+    public void contractDetailsEnd(int reqId) { }
 
     public void currentTime(long time) {
         throw new NotImplementedException();
@@ -198,7 +212,7 @@ public class IbConnector : IConnector, EWrapper {
     public void newsProviders(NewsProvider[] newsProviders) {
         throw new NotImplementedException();
     }
-    public void nextValidId(int orderId) => this.validOrderId = orderId;
+    public void nextValidId(int orderId) => validOrderId = orderId;
     public void openOrder(int orderId, Contract contract, Order order, OrderState orderState) {
         throw new NotImplementedException();
     }
@@ -320,24 +334,31 @@ public class IbConnector : IConnector, EWrapper {
     }
 
     public void tickPrice(int tickerId, int field, double price, TickAttrib attribs) {
-        throw new NotImplementedException();
+        if (price <= 0.0) return;
+        if (price == double.MaxValue) return;
+
+        switch (field) {
+            case TickType.BID:
+            case TickType.DELAYED_BID:
+                break;
+            case TickType.ASK:
+            case TickType.DELAYED_ASK:
+                break;
+            case TickType.LAST:
+            case TickType.DELAYED_LAST:
+                break;
+            default:
+                break;
+        }
     }
 
     public void tickReqParams(int tickerId, double minTick, string bboExchange, int snapshotPermissions) {
-        throw new NotImplementedException();
+        /* пригодится */
     }
 
-    public void tickSize(int tickerId, int field, decimal size) {
-        throw new NotImplementedException();
-    }
-
-    public void tickSnapshotEnd(int tickerId) {
-        throw new NotImplementedException();
-    }
-
-    public void tickString(int tickerId, int field, string value) {
-        throw new NotImplementedException();
-    }
+    public void tickSize(int tickerId, int field, decimal size) { }
+    public void tickSnapshotEnd(int tickerId) { }
+    public void tickString(int tickerId, int field, string value) { }
 
     public void updateAccountTime(string timestamp) {
         throw new NotImplementedException();
